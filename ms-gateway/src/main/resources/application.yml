@@ -1,0 +1,49 @@
+server:
+    port: 8282
+
+spring:
+  application:
+    name: ms-gateway
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+            '[/**]':
+              - allowedOrigins:
+                - "localhost:4200"
+              - allowedMethods:
+                - "GET"
+                - "POST"
+                - "PUT"
+                - "DELETE"
+                - "OPTIONS"
+      routes:
+        - id: ms-customer
+          uri: lb://ms-customer
+          predicates:
+            - Path=/ms-customer/**
+          filters:
+            - RewritePath=/ms-customer/(?<path>.*), /$\{path}
+        - id: ms-account
+          uri: lb://ms-account
+          predicates:
+            - Path=/ms-account/**
+          filters:
+            - RewritePath=/ms-account/(?<path>.*), /$\{path}
+# automatic discovery of services
+#      discovery:
+#        locator:
+#          enabled: true
+#          lower-case-service-id: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

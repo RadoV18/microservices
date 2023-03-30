@@ -1,0 +1,11 @@
+server:
+  port: 8008
+
+spring:
+  application:
+    name: ms-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: http://localhost:8080/git/software.git
